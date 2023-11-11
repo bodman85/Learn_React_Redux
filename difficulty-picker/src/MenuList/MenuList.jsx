@@ -1,0 +1,10 @@
+import { MenuListItem } from "../MenuListItem/MenuListItem"
+import s from "./style.module.css"
+export function MenuList(props){
+    return <div className={s.container}>
+        <MenuListItem difficulty = "Low" />
+        <MenuListItem difficulty = "Medium" />
+        <MenuListItem difficulty = "Hard" />
+        <MenuListItem difficulty = "Insane" />
+    </div>
+}

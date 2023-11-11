@@ -1,0 +1,18 @@
+1.
+npx create-react-app difficulty-picker
+cd difficulty-picker
+npm start
+
+2. remove everything under /src folder
+
+3. create index.js ->
+
+import ReactDOM from "react-dom/client";
+
+import {App} from "./App"
+
+const rootDiv = document.getElementById("root");
+
+const reactRoot = ReactDOM.createRoot(rootDiv);
+
+reactRoot.render(<App/>);

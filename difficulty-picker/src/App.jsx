@@ -11,7 +11,7 @@ export function App() {
   }
   return (
     <>
-      <h1>Select your React difficulty</h1>
+      <h1 style={{textAlign: "center"}}>Select your React difficulty</h1>
       <div className={s.workspace}>
         <MenuList onItemClick={onMenuListItemClick}/>
         <DisplayDifficulty difficulty={currentDifficulty} />

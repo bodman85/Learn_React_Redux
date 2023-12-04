@@ -4,6 +4,7 @@ import { useState } from "react";
 import { NoteForm } from "components/NoteForm/NoteForm";
 import { NoteAPI } from "api/note-api";
 import { updateNote, deleteNote } from "store/notes/notes-slice";
+import { withAuthRequired } from "hoc/withAuthRequired";
 
 export function Note(props) {
   const { noteId } = useParams();
@@ -44,3 +45,5 @@ export function Note(props) {
     </>
   );
 }
+
+export const ProtectedNote = withAuthRequired(Note);

@@ -17,7 +17,10 @@ export function App() {
     dispatch(setNoteList(noteList));
   }
   useEffect(() => {
-    fetchNotes();
+    const unsubscribe = NoteAPI.onShouldSyncNotes(fetchNotes);
+    return () => {
+      unsubscribe();
+    };
   }, []);
   return (
     <div className={s.workspace}>

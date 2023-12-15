@@ -1,34 +1,63 @@
-import axios from "axios";
-
-const BASE_URL = "http://localhost:3200/notes";
+import {
+  collection,
+  doc,
+  orderBy,
+  query,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
+import { FirebaseApp } from "utils/firebase";
 
 export class NoteAPI {
-  static async create(note) {
-    return this.formatId((await axios.post(`${BASE_URL}`, note)).data);
+  static async create(formValues) {
+    const response = await addDoc(
+      collection(FirebaseApp.db, "notes"),
+      formValues
+    );
+    return {
+      id: response.id,
+      ...formValues,
+    };
   }
 
   static async fetchAll() {
-    return (await axios.get(`${BASE_URL}`)).data.map(this.formatId);
-  }
-
-  static async fetchById(id) {
-    return this.formatId((await axios.get(`${BASE_URL}/${id}`)).data);
+    const q = query(
+      collection(FirebaseApp.db, "notes"),
+      orderBy("created_at", "asc")
+    );
+    const response = await getDocs(q);
+    return response.docs.map((document) => {
+      return {
+        id: document.id,
+        ...document.data(),
+      };
+    });
   }
 
   static async deleteById(id) {
-    return (await axios.delete(`${BASE_URL}/${id}`));
+    deleteDoc(doc(FirebaseApp.db, "notes", id));
   }
 
   static async updateById(id, values) {
-    return this.formatId(
-      (await axios.patch(`${BASE_URL}/${id}`, values)).data
-    );
-  }
-
-  static formatId(note) {
+    const query = doc(FirebaseApp.db, "notes", id);
+    await updateDoc(query, values);
     return {
-      ...note,
-      id: note.id.toString(),
+      id,
+      ...values,
     };
+  }
+  static onShouldSyncNotes(onChange) {
+    const q = query(collection(FirebaseApp.db, "notes"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const isUserPerformingChange = querySnapshot.metadata.hasPendingWrites;
+      if (!isUserPerformingChange) {
+        console.log("You are not synced with the notes collection");
+        onChange();
+      }
+    });
+    return unsubscribe;
   }
 }
